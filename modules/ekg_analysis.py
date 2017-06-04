@@ -1,11 +1,23 @@
-from BASS import analyze, samp_entropy_wrapper, poincare_batch, histent_wrapper, moving_statistics, psd_event, ap_entropy_wrapper
+from bass_functions import analyze
+from bass_functions import samp_entropy_wrapper
+from bass_functions import poincare_batch
+from bass_functions import histent_wrapper
+from bass_functions import moving_statistics
+from bass_functions import psd_event
+from bass_functions import ap_entropy_wrapper
 
 import numpy as np
-from numpy import NaN, Inf, arange, isscalar, asarray, array
+from numpy import NaN
+#from numpy import Inf
+#from numpy import arange
+#from numpy import isscalar
+#from numpy import asarray
+#from numpy import array
 import pandas as pd
 import time as t
-import sys
-import os, errno
+#import sys
+#import os
+#import errno
 
 #The ekg module. Runs analysis of all aspects pertaining to ekg-signal analysis. Modified from the pleth_analysis module by Ryan Thorpe.
 
@@ -82,7 +94,7 @@ def ekg_analysis(Data, Settings, Results):
 		meas = 'Intervals'
 		Results = poincare_batch(event_type, meas, Data, Settings, Results)
 	except:
-		print "Poincare Failed"
+		print("Poincare Failed")
 	
 	#Hist Ent
 	try:
@@ -92,7 +104,7 @@ def ekg_analysis(Data, Settings, Results):
 		ekg.ix[key]['Intv Hist Ent'] = float(Results['Histogram Entropy']['Intervals'])
 		
 	except:
-		print "Histogram Entropy Failed"
+		print("Histogram Entropy Failed")
 		ekg.ix[key]['PA Hist Ent'] = NaN
 		ekg.ix[key]['Intv Hist Ent'] = NaN
 	
@@ -129,5 +141,5 @@ def ekg_analysis(Data, Settings, Results):
 	ekg.to_csv(r"%s/%s_EKG.csv"%(Settings['Output Folder'],Settings['Label']))
 	end_time = t.clock()
 	
-	print 'Heart Rate Varibility Analysis Complete: %s sec' %np.round((end_time- start_time), 4)
+	print('Heart Rate Varibility Analysis Complete: %s sec' %np.round((end_time- start_time), 4))
 	#ekg

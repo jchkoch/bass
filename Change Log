@@ -1,5 +1,11 @@
 Change Log
 
+Beta 1.3" 04-06-2017
+
+Major Changes:
+- updated BASS.py and bass_fucntions.py to Python3.X
+- Python3.X compatibility breaks existing Python2.X compatibility
+
 Beta 1.2: 05-10-2015
 
 Major Changes:
