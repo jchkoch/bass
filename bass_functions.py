@@ -424,13 +424,13 @@ def load_settings(Settings):
     Settings = load_settings(Settings)
     """
 
-    settings_temp = pd.read_csv(Settings['Settings File'], index_col=0, header=0, sep=',')
+    settings_temp = pd.read_csv(Settings['Settings File'], index_col=0, header=0, sep='\t')
 
     exclusion_list = ['plots folder', 'folder',
                       'Sample Rate (s/frame)', 'Output Folder',
                       'Baseline', 'Baseline-Rolling', 'Settings File', 'Time Scale',
                       'Label', 'File Type', 'HDF Key', 'HDF Channel']
-    settings_temp = settings_temp.ix[:,0]
+    settings_temp = settings_temp.iloc[:,0]
     for key, val in settings_temp.iteritems():
 
         if key in exclusion_list:
@@ -549,7 +549,7 @@ def display_settings(Settings):
         Settings_copy['Baseline-Rolling'] = True
     Settings_copy = DataFrame.from_dict(Settings_copy, orient='index')
     Settings_copy.columns = ['Value']
-    Settings_copy = Settings_copy.sort()
+    Settings_copy = sorted(Settings_copy)
     return Settings_copy
 
 def load_results(location, event_type, Results):
@@ -915,15 +915,18 @@ def savgolay_settings():
 
     temp_list = input("Savitzky Golay Settings (window, polynomial): ").lower()
 
-    temp_list = temp_list.split(',')
+    temp_list = temp_list.split(', ')
 
     if temp_list[0] == "none" or temp_list[0] == "false" or temp_list == '':
         window = "none"
         poly = "none"
     else:
-        window = int(temp_list[0])
-        poly = int(temp_list[1])
-
+        window = temp_list[0]
+        poly = temp_list[1]
+        window = float(window)
+        window = int(window)
+        poly = float(poly)
+        poly = int(poly)
         if window % 2 == 0:
             print("ERROR: window size must be odd.")
             print(" ")
@@ -2233,10 +2236,9 @@ def Save_Results(Data, Settings, Results):
     now = datetime.datetime.now()
     colname = 'Settings: ' + str(now)
     Settings_panda.columns = [colname]
-    Settings_panda = Settings_panda.sort()
-    Settings_panda.to_csv(r"%s/%s_Settings_%s.csv"%(Settings['Output Folder'],
-                                                 Settings['Label'],
-                                                 now.strftime('%Y_%m_%d__%H_%M_%S')))
+    Settings_panda = sorted(Settings_panda)
+    Settings_panda.to_csv(r"%s/%s_Settings_%s.csv"%(Settings['Output Folder'], Settings['Label'], 
+                                                    now.strftime('%Y_%m_%d__%H_%M_%S')))
 
     print("All results saved to: ", Settings['Output Folder'])
     print("Thank you for chosing BASS.py for all your basic analysis needs. Proceed for graphs and event analysis.")
