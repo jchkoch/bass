@@ -1,11 +1,21 @@
-from BASS import analyze, samp_entropy_wrapper, poincare_batch, histent_wrapper, moving_statistics
+from bass_functions import analyze
+from bass_functions import samp_entropy_wrapper
+from bass_functions import poincare_batch
+from bass_functions import histent_wrapper
+from bass_functions import moving_statistics
 
 import numpy as np
-from numpy import NaN, Inf, arange, isscalar, asarray, array
+from numpy import NaN
+#from numpy import Inf
+#from numpy import arange
+#from numpy import isscalar
+#from numpy import asarray
+#from numpy import array
 import pandas as pd
 import time as t
-import sys
-import os, errno
+#import sys
+#import os
+#import errno
 
 #The pleth module. Runs analysis of all aspects pertaining to pleth-signal analysis.
 def pleth_analysis(Data, Settings, Results):
@@ -127,7 +137,7 @@ def pleth_analysis(Data, Settings, Results):
 		meas = 'Interburst Interval'
 		Results = poincare_batch(event_type, meas, Data, Settings, Results)
 	except:
-		print "Poincare Failed"
+		print("Poincare Failed")
 	
 	#Hist Ent
 	try:
@@ -138,7 +148,7 @@ def pleth_analysis(Data, Settings, Results):
 		pleth.ix[key]['TTot Hist Ent'] = float(Results['Histogram Entropy']['Total Cycle Time'])
 		
 	except:
-		print "Histogram Entropy Failed"
+		print("Histogram Entropy Failed")
 		pleth.ix[key]['TI Hist Ent'] = NaN
 		pleth.ix[key]['TE Hist Ent'] = NaN
 		pleth.ix[key]['TTot Hist Ent'] = NaN
@@ -155,5 +165,5 @@ def pleth_analysis(Data, Settings, Results):
 	pleth.to_csv(r"%s/%s_Pleth.csv"%(Settings['Output Folder'],Settings['Label']))
 	end_time = t.clock()
 	
-	print 'Pleth Analysis Complete: %s sec' %np.round((end_time- start_time), 4)
+	print('Pleth Analysis Complete: %s sec' %np.round((end_time- start_time), 4))
 	pleth
