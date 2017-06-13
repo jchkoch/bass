@@ -220,10 +220,10 @@ def load_wrapper(Data, Settings):
 #==============================================================================
 
     elif Settings['File Type'] == 'Plain':
-        data = pd.read_csv('%s/%s' %(Settings['folder'], Settings['Label']), sep = '\t', index_col=0, header=None)
+        data = pd.read_csv('%s/%s' % (Settings['folder'], Settings['Label']),
+                           sep='\t', index_col=0, header=None)
 
         data.columns = ['Var1']
-        
         new_cols = []
 
         for i in np.arange(len(data.columns)):
@@ -238,7 +238,7 @@ def load_wrapper(Data, Settings):
         print("Rounded Sampling Rate (s/frame): %s" %Settings['Sample Rate (s/frame)'])
 
         length = Data['original'].index[-1] - Data['original'].index[0]
-        print('%s is %s seconds long.' %(Settings['Label'], length))
+        print('%s is %s seconds long.' % (Settings['Label'], length))
         Settings['Graph LCpro events'] = False
 
     #HDF5, from RTXI, time in ms
@@ -2199,49 +2199,57 @@ def burstarea(data, time, burst_start, burst_end, dx = 10):
         #print("%s = %s" %(count,area)
     return burst_area
 
-#
-#Save
-#
-#
+
+# Save Results
 def Save_Results(Data, Settings, Results):
     '''
-    Save function for all files out of BASS. All files must be present, otherwise it will not save. all files in the same folder with the same name will be saved over, except for the Settings file, which always has a unique name.
+    Save function for all files out of BASS.
+    All files must be present, otherwise it will not save.
+    All files in the same folder with the same name will be saved over,
+    except for the Settings file, which always has a unique name.
     '''
-        #Save master files
-    Results['Peaks-Master'].to_csv(r'%s/%s_Peak_Results.csv'
-                                   %(Settings['Output Folder'], Settings['Label']))
-    Results['Valleys-Master'].to_csv(r'%s/%s_Valley_Results.csv'
-                                   %(Settings['Output Folder'], Settings['Label']))
-    Results['Bursts-Master'].to_csv(r'%s/%s_Bursts_Results.csv'
-                                    %(Settings['Output Folder'], Settings['Label']))
+    # Save master files
+    Results['Peaks-Master'].to_csv(r'%s/%s_Peak_Results.csv' %
+                                   (Settings['Output Folder'],
+                                    Settings['Label']))
+    Results['Valleys-Master'].to_csv(r'%s/%s_Valley_Results.csv' %
+                                     (Settings['Output Folder'],
+                                      Settings['Label']))
+    Results['Bursts-Master'].to_csv(r'%s/%s_Bursts_Results.csv' %
+                                    (Settings['Output Folder'],
+                                     Settings['Label']))
 
-    #Save Master Summary Files
+    # Save Master Summary Files
     burst_grouped = Results['Bursts-Master'].groupby(level=0)
     burst_grouped = burst_grouped.describe()
-    burst_grouped.to_csv(r'%s/%s_Bursts_Results_Summary.csv'
-                                           %(Settings['Output Folder'], Settings['Label']))
+    burst_grouped.to_csv(r'%s/%s_Bursts_Results_Summary.csv' %
+                         (Settings['Output Folder'],
+                          Settings['Label']))
 
     peak_grouped = Results['Peaks-Master'].groupby(level=0)
-    peak_grouped= peak_grouped.describe()
-    peak_grouped.to_csv(r'%s/%s_Peaks_Results_Summary.csv'
-                                           %(Settings['Output Folder'], Settings['Label']))
+    peak_grouped = peak_grouped.describe()
+    peak_grouped.to_csv(r'%s/%s_Peaks_Results_Summary.csv' %
+                        (Settings['Output Folder'],
+                         Settings['Label']))
 
     valley_grouped = Results['Valleys-Master'].groupby(level=0)
-    valley_grouped= valley_grouped.describe()
-    valley_grouped.to_csv(r'%s/%s_Valley_Results_Summary.csv'
-                                           %(Settings['Output Folder'], Settings['Label']))
-
-    #save settings
-    Settings_panda = DataFrame.from_dict(Settings, orient='index')
+    valley_grouped = valley_grouped.describe()
+    valley_grouped.to_csv(r'%s/%s_Valley_Results_Summary.csv' %
+                          (Settings['Output Folder'],
+                           Settings['Label']))
+    # save settings
+    Settings_panda = pd.DataFrame.from_dict(Settings, orient='index')
     now = datetime.datetime.now()
-    colname = 'Settings: ' + str(now)
-    Settings_panda.columns = [colname]
-    Settings_panda = sorted(Settings_panda)
-    Settings_panda.to_csv(r"%s/%s_Settings_%s.csv"%(Settings['Output Folder'], Settings['Label'], 
-                                                    now.strftime('%Y_%m_%d__%H_%M_%S')))
+    Settings_panda.columns = ['Settings: ' + str(now)]
+    # Settings_panda = sorted(Settings_panda)
+    Settings_panda.to_csv(r'%s/%s_Setting_%s.csv' %
+                          (Settings['Output Folder'], Settings['Label'],
+                           now.strftime('%Y_%m_%d__%H_%M_%S')))
 
     print("All results saved to: ", Settings['Output Folder'])
-    print("Thank you for chosing BASS.py for all your basic analysis needs. Proceed for graphs and event analysis.")
+    print("Thank you for chosing BASS.py",
+          "for all your basic analysis needs.",
+          "Proceed for graphs and event analysis.")
     print("Analysis Complete")
 
     print("\n--------------------------------------------")
@@ -2265,13 +2273,12 @@ def Save_Results(Data, Settings, Results):
     print('|Event Detection Complete!|')
     print("---------------------------")
 
-#
-#Line Plots
-#general plots as well as graphing functions
-#several of the other functions have specific, paired functions, thus their code is not listed here
-#
+# Line Plots
+# general plots as well as graphing functions
+# several of the other functions have specific, paired functions, thus their code is not listed here
 
-#@iterate_data_decorator
+
+# @iterate_data_decorator
 def plot_rawdata(Data):
     figure = plt.plot(Data['original'].index, Data['original'].ix[:,0], 'k')
     plt.title(r'Raw Data %s' %Data['original'].ix[:,0].name)
@@ -2397,35 +2404,45 @@ def graph_ts(Data, Settings, Results, roi = 'random', mode = 'display', lcpro = 
     Data: dict
         Must contain Data['original'], can contain any other version of data.
     Settings: dict
-        dictionary that contains user settings. If setting is not included, section is skipped.
+        dictionary that contains user settings.
+        If setting is not included, section is skipped.
     Results: dict
-        dictionary that contains results objects. If result object is not included, section is skipped.
+        dictionary that contains results objects.
+        If result object is not included, section is skipped.
     roi: string
-        Name of the column of data (from Data dict columns) to be graphed. Also takes 'random', which will generate a random graph from any of the available columns
+        Name of the column of data (from Data dict columns) to be graphed.
+        Also takes 'random', which will generate a random graph
+        from any of the available columns
     mode: string
-        If mode is set to save, then the resulting graph will be saved and not displayed. if it is set to 'display', it will display the graph but not automatically save it.
+        If mode is set to save, then the resulting graph will be saved
+        and not displayed. if it is set to 'display', it will display
+        the graph but not automatically save it.
     lcpro = bool
-        if lcpro events are available, then they can be optionally displayed in the graph.
+        if lcpro events are available, then they can be
+        optionally displayed in the graph.
     Returns
     -------
     None
 
     Notes
     -----
-    Each section of graph is wrapped in try/except, meaning that all compunents do not need to be present when this function runs.
+    Each section of graph is wrapped in try/except, meaning that all compunents
+        do not need to be present when this function runs.
     '''
     if roi.lower() == 'random':
         try:
-            rand_int = np.random.randint(len(Data['original'].columns)) #get random ROI number
-            roi = Data['original'].columns[rand_int] #convert to column name
+            # get random ROI number
+            rand_int = np.random.randint(len(Data['original'].columns))
+            roi = Data['original'].columns[rand_int]  # convert to column name
         except:
-            roi = Data['original'].columns[0] #if random does not work, graph the first column of data
+            # if random does not work, graph the first column of data
+            roi = Data['original'].columns[0]
 
-    plt.figure() #start a new figure
-    plt.title(roi) #set title of graph to just the name of the column
+    plt.figure()  # start a new figure
+    plt.title(roi)  # set title of graph to just the name of the column
     plt.xlabel('Time (s)')
 
-    #set the correct data array
+    # set the correct data array
     try:
         if Settings['Baseline Type'] == 'static':
             data_temp = Data['trans']
@@ -2436,68 +2453,81 @@ def graph_ts(Data, Settings, Results, roi = 'random', mode = 'display', lcpro = 
         elif Settings['Baseline Type'] == 'rolling':
             data_temp = Data['rolling']
             plt.ylabel('Relative Amplitude (Transformed Data)')
-    except: #if no baseline type is set
-        try: #try using data trans
+    except:  # if no baseline type is set
+        try:  # try using data trans
             data_temp = Data['trans']
             plt.ylabel('Relative Amplitude (Transformed Data)')
-        except: #if not yet transformed, used original
+        except:  # if not yet transformed, used original
             data_temp = Data['original']
             plt.ylabel('Amplitude (Raw Data)')
 
-    try: #graph data
-        plt.plot(data_temp.index, data_temp[roi], color = 'k', label= 'Time Series') #plot time series
+    try:  # graph data
+        # plot time series
+        plt.plot(data_temp.index, data_temp[roi], color='k',
+                 label='Time Series')
     except:
-        print('Time Series for %s could not be graphed' %(roi))
+        print('Time Series for %s could not be graphed' % (roi))
 
-    try: #set limits
-        plt.ylim(ymin= min(data_temp.min()), ymax= max(data_temp.max()))
-        plt.xlim(xmin= data_temp.index[0], xmax= data_temp.index[-1])
+    try:  # set limits
+        plt.ylim(ymin=min(data_temp.min()), ymax=max(data_temp.max()))
+        plt.xlim(xmin=data_temp.index[0], xmax=data_temp.index[-1])
     except:
-        pass #default limits kick in. may be inconsistent if aligned time series
+        # default limits kick in. may be inconsistent if aligned btime series
+        pass
 
-    try: #graph baseline
+    try:  # graph baseline
         if Settings['Baseline Type'] == 'static':
-            pass #there is no baseline MWAHAHAHAHA
-            #I guess I left this in here to be consistent
-            #and confuse you, you sweet, innocent little developer.
-            #and I left this comment to make you laugh.
-            #Oh god, this is my life...
-
+            pass  # there is no baseline MWAHAHAHAHA
+            # I guess I left this in here to be consistent
+            # and confuse you, you sweet, innocent little developer.
+            # and I left this comment to make you laugh.
+            # Oh god, this is my life...
         elif Settings['Baseline Type'] == 'linear':
-            plt.hlines(0, Data['original'].index[0], Data['original'].index[-1], 'b', label = 'Baseline')
+            plt.hlines(0, Data['original'].index[0],
+                       Data['original'].index[-1], 'b', label='Baseline')
 
         elif Settings['Baseline Type'] == 'rolling':
-            plt.plot(Results['Baseline-Rolling'][roi].index, Results['Baseline-Rolling'][roi], 'b') #in this instance, baseline = rolling average
+            # in this instance, baseline = rolling average
+            plt.plot(Results['Baseline-Rolling'][roi].index,
+                     Results['Baseline-Rolling'][roi], 'b')
 
-    except:#baseline has not yet been set
+    except:  # baseline has not yet been set
         pass
 
-    try: #graph threshold
+    try:  # graph threshold
         if Settings['Baseline Type'] == 'static':
-            plt.hlines(Settings['Threshold'], Data['original'].index[0], Data['original'].index[-1], 'r', label = 'Threshold')
+            plt.hlines(Settings['Threshold'], Data['original'].index[0],
+                       Data['original'].index[-1], 'r', label='Threshold')
 
         elif Settings['Baseline Type'] == 'linear':
-            plt.hlines(Results['Baseline'][roi]*Settings['Threshold'], Data['original'].index[0],
-                       Data['original'].index[-1], 'r', label = 'Threshold')
+            plt.hlines(Results['Baseline'][roi] * Settings['Threshold'],
+                       Data['original'].index[0],
+                       Data['original'].index[-1], 'r', label='Threshold')
 
         elif Settings['Baseline Type'] == 'rolling':
-            plt.plot(Results['Baseline-Rolling'][roi].index, Results['Baseline-Rolling'][roi]+Settings['Threshold'], 'r')
-    except:#threshold has not yet been set
+            plt.plot(Results['Baseline-Rolling'][roi].index,
+                     Results['Baseline-Rolling'][roi] +
+                     Settings['Threshold'], 'r')
+    except:  # threshold has not yet been set
         pass
 
-    #plot peaks
+    # plot peaks
     try:
-        plt.plot(Results['Peaks'][roi].index, Results['Peaks'][roi]['Peaks Amplitude'],
-                 marker = '^', color = 'b', linestyle = 'None', alpha = 1, label = 'Peak', markersize = 5)
+        plt.plot(Results['Peaks'][roi].index,
+                 Results['Peaks'][roi]['Peaks Amplitude'],
+                 marker='^', color='b', linestyle='None',
+                 alpha=1, label='Peak', markersize=5)
     except:
         pass
-    #plot valleys
+    # plot valleys
     try:
-        plt.plot(Results['Valleys'][roi].index, Results['Valleys'][roi]['Valley Amplitude'],
-                 marker = 'v', color = 'm', linestyle = 'None', alpha = 1, label = 'Valley', markersize = 5)
+        plt.plot(Results['Valleys'][roi].index,
+                 Results['Valleys'][roi]['Valley Amplitude'],
+                 marker='v', color='m', linestyle='None',
+                 alpha=1, label='Valley', markersize=5)
     except:
         pass
-    #plot bursts
+    # plot bursts
     try:
         if Settings['Baseline Type'] == 'static':
             start_y = []
@@ -2507,9 +2537,11 @@ def graph_ts(Data, Settings, Results, roi = 'random', mode = 'display', lcpro = 
             for i in np.arange(len(Results['Bursts'][roi]['Burst End'])):
                 end_y.append(Settings['Threshold'])
             plt.plot(Results['Bursts'][roi]['Burst Start'], start_y,
-                     marker = 's', color = 'g', linestyle = 'None', alpha = 1, label = 'Burst Start', markersize = 5)
+                     marker='s', color='g', linestyle='None', alpha=1,
+                     label='Burst Start', markersize=5)
             plt.plot(Results['Bursts'][roi]['Burst End'], end_y,
-                     marker = 's', color = 'y', linestyle = 'None', alpha = 1, label = 'Burst End', markersize = 5)
+                     marker='s', color='y', linestyle='None', alpha=1,
+                     label='Burst End', markersize=5)
 
         elif Settings['Baseline Type'] == 'linear':
             start_y = []
@@ -2519,51 +2551,64 @@ def graph_ts(Data, Settings, Results, roi = 'random', mode = 'display', lcpro = 
             for i in np.arange(len(Results['Bursts'][roi]['Burst End'])):
                 end_y.append(Results['Baseline'][roi]*Settings['Threshold'])
             plt.plot(Results['Bursts'][roi]['Burst Start'], start_y,
-                     marker = 's', color = 'g', linestyle = 'None', alpha = 1, label = 'Burst Start', markersize = 5)
+                     marker='s', color='g', linestyle= 'None', alpha=1,
+                     label='Burst Start', markersize=5)
             plt.plot(Results['Bursts'][roi]['Burst End'], end_y,
-                     marker = 's', color = 'y', linestyle = 'None', alpha = 1, label = 'Burst End', markersize = 5)
-
-
+                     marker='s', color='y', linestyle='None', alpha=1,
+                     label='Burst End', markersize=5)
         elif Settings['Baseline Type'] == 'rolling':
-            plt.plot(Results['Bursts'][roi]['Burst Start'], Results['Bursts'][roi]['Burst Start Amplitude'],
-                     marker = 's', color = 'g', linestyle = 'None', alpha = 1, label = 'Burst Start', markersize = 5)
-            plt.plot(Results['Bursts'][roi]['Burst End'], Results['Bursts'][roi]['Burst End Amplitude'],
-                     marker = 's', color = 'y', linestyle = 'None', alpha = 1, label = 'Burst End', markersize = 5)
-            plt.plot(Results['Baseline-Rolling'][roi].index, Results['Baseline-Rolling'][roi], 'b') #in this instance, baseline = rolling average
-            plt.plot(Results['Baseline-Rolling'][roi].index, Results['Baseline-Rolling'][roi]+Settings['Threshold'], 'r')
+            plt.plot(Results['Bursts'][roi]['Burst Start'],
+                     Results['Bursts'][roi]['Burst Start Amplitude'],
+                     marker='s', color='g', linestyle='None', alpha=1,
+                     label='Burst Start', markersize=5)
+            plt.plot(Results['Bursts'][roi]['Burst End'],
+                     Results['Bursts'][roi]['Burst End Amplitude'],
+                     marker='s', color='y', linestyle='None', alpha=1,
+                     label='Burst End', markersize=5)
+            # in this instance, baseline = rolling average
+            plt.plot(Results['Baseline-Rolling'][roi].index,
+                     Results['Baseline-Rolling'][roi], 'b')
+            plt.plot(Results['Baseline-Rolling'][roi].index,
+                     Results['Baseline-Rolling'][roi] +
+                     Settings['Threshold'], 'r')
 
-    except:#this would be the case that no bursts were detected
+    except:  # this would be the case that no bursts were detected
         pass
 
-    #LCPRO events
-    if lcpro == True:
-
+    # LCPRO events
+    if lcpro is True:
         try:
             if Settings['Baseline Type'] == 'static' or Settings['Baseline Type'] == 'rolling':
-                plt.plot(Data['ROI parameters']['Time(s)'].loc[roi], Data['ROI parameters']['Amp(F/F0)'].loc[roi],
-                         marker = 'o', color = 'r', linestyle = 'none', alpha = 0.4, label = 'LCPro Peak', markersize = 10)
+                plt.plot(Data['ROI parameters']['Time(s)'].loc[roi],
+                         Data['ROI parameters']['Amp(F/F0)'].loc[roi],
+                         marker='o', color='r', linestyle='none',
+                         alpha=0.4, label='LCPro Peak', markersize=10)
             elif Settings['Baseline Type'] == 'linear':
                 plt.plot(Data['ROI parameters']['Time(s)'].loc[roi],
-                         (Data['ROI parameters']['Amp(F/F0)'].loc[roi] - Results['Baseline'][roi]),
-                         marker = 'o', color = 'r', linestyle = 'none', alpha = 0.4, label = 'LCPro Peak', markersize = 10)
+                         (Data['ROI parameters']['Amp(F/F0)'].loc[roi] -
+                         Results['Baseline'][roi]), marker='o', color='r',
+                         linestyle='none', alpha=0.4, label='LCPro Peak',
+                         markersize=10)
 
-            plt.vlines(Data['ROI parameters']['Start time (s)'].loc[roi], ymin= min(data_temp.min()),
-                       ymax =max(data_temp.max()), color = 'r', label = 'LCpro Boundary')
-            plt.vlines(Data['ROI parameters']['End time (s)'].loc[roi], ymin= min(data_temp.min()),
-                       ymax =max(data_temp.max()), color = 'r')
+            plt.vlines(Data['ROI parameters']['Start time (s)'].loc[roi],
+                       ymin=min(data_temp.min()), ymax=max(data_temp.max()),
+                       color='r', label='LCpro Boundary')
+            plt.vlines(Data['ROI parameters']['End time (s)'].loc[roi],
+                       ymin=min(data_temp.min()), ymax=max(data_temp.max()),
+                       color='r')
             plt.legend()
         except:
             pass
 
     if mode == 'save':
-
-        plt.savefig(r'%s/%s.pdf'%(Settings['plots folder'],roi))
+        plt.savefig(r'%s/%s.pdf' % (Settings['plots folder'], roi))
         plt.close()
     elif mode == 'display':
         plt.show()
     else:
         plt.show()
     return
+
 
 def average_measurement_plot(event_type, meas, Results):
     """
@@ -2572,18 +2617,22 @@ def average_measurement_plot(event_type, meas, Results):
     Parameters
     ----------
     event_type: string
-        A string that should be either 'Peaks' or 'Bursts', which will tell the function
-        which results to pull the measurement from.
+         A string that should be either 'Peaks' or 'Bursts',
+         which will tell the function which results to pull the
+         measurement from.
     meas: string
-        A string that specifies which measurement type to use for the figure.
+         A string that specifies which measurement type to use for the figure.
     Results: dictionary
-        The dictionary that contains all of the results. this function uses either Results['Peaks-Master'] or Results['Bursts-Master'].
+         The dictionary that contains all of the results.
+         This function uses either Results['Peaks-Master']
+         or Results['Bursts-Master'].
     Returns
     -------
     none
     Notes
     -----
-    Displays the figure. does not automatically save out or return the figure object.
+    Displays the figure. does not automatically save out
+    or return the figure object.
     Examples
     -----
     event_type = 'Peaks'
