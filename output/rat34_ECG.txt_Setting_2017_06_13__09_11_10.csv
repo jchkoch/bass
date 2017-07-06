@@ -1,0 +1,42 @@
+,Settings: 2017-06-13 09:11:10.044138
+folder,C:\Users\nils\Documents\GitHub\bass
+Label,rat34_ECG.txt
+Output Folder,C:\Users\nils\Documents\GitHub\bass\output
+Graph LCpro events,False
+File Type,Plain
+Milliseconds,False
+plots folder,C:\Users\nils\Documents\GitHub\bass\output/plots
+Sample Rate (s/frame),0.00025
+PSD-Signal,"ULF     25.0
+VLF     75.0
+LF     150.0
+HF     300.0
+dx       2.0
+dtype: float64"
+Settings File,C:\Users\nils\Documents\GitHub\bass\rat34_Settingsnk.csv
+Absolute Value,True
+Bandpass Highcut,none
+Bandpass Lowcut,none
+Bandpass Polynomial,none
+Baseline Type,static
+Burst Area,True
+Delta,0.25
+Exclude Edges,True
+Generate Graphs,False
+Inter-event interval minimum (seconds),0.01
+Linear Fit,False
+Linear Fit-Rolling R,0.75
+Linear Fit-Rolling Window,1000.0
+Maximum Burst Duration (s),10.0
+Minimum Burst Duration (s),0.0
+Minimum Peak Number,0
+Peak Maximum,0.7
+Peak Minimum,0.0
+Relative Baseline,0.0
+Rolling Baseline Window,none
+Savitzky-Golay Polynomial,4
+Savitzky-Golay Window Size,251
+Threshold,0.15
+Inter-event interval minimum (time-scale units),0.0
+Minimum Burst Duration (time-scale units),0.0
+Maximum Burst Duration (time-scale units),10.0
