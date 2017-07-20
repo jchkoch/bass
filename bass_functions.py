@@ -1337,8 +1337,7 @@ def baseline_wrapper(Data, Settings, Results):
             window = window+1 #if window is odd, there's a problem with baseline_rolling.
         for label, column in Data['trans'].iteritems():
             rolling_mean, data_roll, time_roll = baseline_rolling(Data['trans'].index,
-                                                              np.array(column),
-                                                              window)
+                                                              np.array(column), window)
             Data['rolling'][label] = data_roll
             Results['Baseline-Rolling'][label] = rolling_mean
 
@@ -2286,6 +2285,7 @@ def plot_rawdata(Data):
     plt.ylabel('Amplitude')
     DataCursor(figure)
     plt.show(figure)
+    
 
 def results_timeseries_plot(roi, start, end, Data, Settings, Results):
     '''
@@ -3080,9 +3080,9 @@ def psd_signal(version, key, scale, Data, Settings, Results):
 
 
     if 'PSD-Signal'not in Results.keys():
-        Results['PSD-Signal'] = DataFrame(index = ['ULF', 'VLF', 'LF','HF','LF/HF', 'Scale'])
+        Results['PSD-Signal'] = DataFrame(index = ['ULF', 'VLF', 'LF','HF', 'UHF', 'LF/HF', 'Scale'])
 
-    results_psd = Series(index = ['ULF', 'VLF', 'LF','HF','LF/HF', 'Scale'])
+    results_psd = Series(index = ['ULF', 'VLF', 'LF','HF', 'UHF', 'LF/HF', 'Scale'])
 
     try:
         df_power = DataFrame( index = Fxx, data = Pxx)
@@ -3104,6 +3104,10 @@ def psd_signal(version, key, scale, Data, Settings, Results):
         df_hf = df_power[(df_power.index>Settings['PSD-Signal']['LF']) & (df_power.index<=Settings['PSD-Signal']['HF'])]
         results_psd['HF'] = scipy.integrate.simps(df_hf['Power'], df_hf.index, dx =Settings['PSD-Signal']['dx'])
 
+        #UHF
+        df_hf = df_power[(df_power.index>Settings['PSD-Signal']['HF']) & (df_power.index<=Settings['PSD-Signal']['UHF'])]
+        results_psd['UHF'] = scipy.integrate.simps(df_hf['Power'], df_hf.index, dx =Settings['PSD-Signal']['dx'])
+        
         #LF/HF
         results_psd['LF/HF'] = results_psd['LF']/results_psd['HF']
         results_psd['Scale'] = NaN
@@ -3260,11 +3264,11 @@ def psd_event(event_type, meas, key, scale, Data, Settings, Results):
             Results['PSD-Event'] = {}
 
         if key not in Results['PSD-Event'].keys():
-            Results['PSD-Event'][key] = DataFrame(index = ['ULF', 'VLF', 'LF','HF','LF/HF', 'Scale'])
+            Results['PSD-Event'][key] = DataFrame(index = ['ULF', 'VLF', 'LF','HF', 'UHF','LF/HF', 'Scale'])
 
         df_power = DataFrame( index = Fxx, data = Pxx)
         df_power.columns = ['Power']
-        results_psd = Series(index = ['ULF', 'VLF', 'LF','HF','LF/HF', 'Scale'])
+        results_psd = Series(index = ['ULF', 'VLF', 'LF','HF', 'UHF','LF/HF', 'Scale'])
 
         #ULF
         df_ulf = df_power[df_power.index<Settings['PSD-Event']['ULF']]
@@ -3282,6 +3286,10 @@ def psd_event(event_type, meas, key, scale, Data, Settings, Results):
         df_hf = df_power[(df_power.index>Settings['PSD-Event']['LF']) & (df_power.index<=Settings['PSD-Event']['HF'])]
         results_psd['HF'] = scipy.integrate.simps(df_hf['Power'], df_hf.index, dx =Settings['PSD-Event']['dx'])
 
+        #UHF
+        df_hf = df_power[(df_power.index>Settings['PSD-Event']['HF']) & (df_power.index<=Settings['PSD-Event']['UHF'])]
+        results_psd['UHF'] = scipy.integrate.simps(df_hf['Power'], df_hf.index, dx =Settings['PSD-Event']['dx'])
+        
         #LF/HF
         results_psd['LF/HF'] = results_psd['LF']/results_psd['HF']
         results_psd['Scale'] = NaN
