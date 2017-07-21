@@ -1336,8 +1336,8 @@ def baseline_wrapper(Data, Settings, Results):
         if window %2 !=0:
             window = window+1 #if window is odd, there's a problem with baseline_rolling.
         for label, column in Data['trans'].iteritems():
-            rolling_mean, data_roll, time_roll = baseline_rolling(Data['trans'].index,
-                                                              np.array(column), window)
+            rolling_mean, data_roll, time_roll = baseline_rolling(Data['trans'].index, 
+                                                                  np.array(column), window)
             Data['rolling'][label] = data_roll
             Results['Baseline-Rolling'][label] = rolling_mean
 
